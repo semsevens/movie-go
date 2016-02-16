@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Movie Go</title>
+    <!-- lib -->
+    <link rel="stylesheet" href="/lib/css/uikit.min.css" />
+    <script src="/lib/js/jquery.min.js"></script>
+    <script src="/lib/js/uikit.min.js"></script>
+    <!-- components -->
+    <link rel="stylesheet" href="/lib/css/components/slidenav.css" />
+    <link rel="stylesheet" href="/lib/css/components/dotnav.css" />
+    <link rel="stylesheet" href="/lib/css/components/notify.css" />
+    <script src="/lib/js/components/slideset.min.js"></script>
+    <script src="/lib/js/components/notify.js"></script>
+    <!-- map -->
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=3fea2e762b1519e4566d3780d75c4f2b&plugin=AMap.MouseTool,AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocode"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/TransferRender1230.js"></script>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/AMap.TransferRender1120.css">
+    <!-- mine -->
+    <link rel="stylesheet" href="/css/my.css" />
+    <link rel="stylesheet" type="text/css" href="/css/map.css">
+    <style>
+    #result {
+    }
+    </style>
+</head>
+<body>
+<!-- header -->
+<div class="uk-block uk-block-secondary uk-block-small uk-contrast uk-text-center uk-margin-large-bottom">
+    <h1>Movie Go</h1>
+</div>
+<!-- small header -->
+<div class="uk-margin uk-text-center" data-uk-slideset="{animation: 'scale', default: 1, small: 2, medium: 3, large: 4, xlarge: 5}">
+    <div class="uk-slidenav-position uk-margin">
+        <!-- movies' images -->
+        <ul class="uk-slideset uk-grid uk-flex-center uk-grid-width-1-2 uk-grid-width-xlarge-1-6 uk-grid-width-large-1-5 uk-grid-width-medium-1-4 uk-grid-width-small-1-3" data-uk-switcher="{connect: '#data-movies', animation:'fade'}">
+            {% for movie in movies %}
+            <li><img src="{{ movie['info']['img'] }}" alt="{{ movie['id'] }}"></li>
+            {% endfor %}
+        </ul>
+        <!-- arrows -->
+        <a href="#" class="uk-slidenav uk-slidenav-previous" data-uk-slideset-item="previous"></a>
+        <a href="#" class="uk-slidenav uk-slidenav-next" data-uk-slideset-item="next"></a>
+    </div>
+    <!-- dots -->
+    <ul class="uk-slideset-nav uk-dotnav uk-flex-center"></ul>
+</div>
+<!-- main body -->
+<div class="uk-container uk-container-center">
+    <!-- movies -->
+    <ul id="data-movies" class="uk-switcher">
+        {% for movie in movies %}
+        <li>
+        <!-- movie info -->
+        <h2>{{ movie['info']['title'] }}</h2>
+        <p>导演: {{ movie['info']['director'] }}</p>
+        <p>主演: {{ movie['info']['starring'] }}</p>
+        <p>类型: {{movie['info']['type'] }}</p>
+        <p>国家: {{ movie['info']['country'] }}</p>
+        <p>首映: {{ movie['info']['premiere'] }}</p>
+        <p>片长: {{ movie['info']['length'] }}</p>
+        <p>剧情: {{ movie['info']['plot'] }}</p> 
+        <!-- data-cinemas switcher -->
+        <ul class="uk-subnav uk-subnav-pill" data-uk-switcher="{connect:'#data-{{ movie['id'] }}-dates', animation: 'slide-right'}">
+            {% for dateGroup in movie['data'] %} 
+            <li><a href="#">{{ dateGroup['date'] }}</a></li>
+            {% endfor %}
+        </ul>
+        <!-- data-cinemas -->
+        <ul id="data-{{ movie['id'] }}-dates" class=" uk-switcher uk-margin">
+            {% for dateGroup in movie['data'] %} 
+            <li>
+            <div class="uk-width-medium-1-1">
+                <!-- data-dates switcher -->
+                <ul class="uk-subnav uk-subnav-pill" data-uk-switcher="{connect:'#data-{{ movie['id'] }}-{{ dateGroup['date'] }}-labels', animation: 'slide-right'}">
+                    {% for labelGroup  in dateGroup['data'] %}
+                    <li><a href="#">
+                    {{ labels[labelGroup['label']] }}
+                    </a></li>
+                    {% endfor %}
+                </ul>
+                <!-- data-dates -->
+                <ul id="data-{{ movie['id'] }}-{{ dateGroup['date'] }}-labels" class="uk-switcher">
+                    {% for labelGroup  in dateGroup['data'] %}
+                    <li>
+                    {% for cinemaGroup in labelGroup['data'] %}
+                    <div class='uk-panel uk-panel-box uk-margin-bottom'>
+                        {% if loop.index == 1 %}
+                        <div class='uk-panel-badge uk-badge uk-badge-success'>
+                            最便宜
+                        </div>
+                        {% endif %}
+                        <div class="uk-panel-title">
+                        {{ cinemasName[cinemaGroup['cinema-id']] }}
+                        </div>
+                        {% for row in cinemaGroup['data'] %}
+                        <div class="uk-grid uk-grid-small">
+                            <div class="uk-width-medium-1-2 uk-flex-inline uk-flex-space-around">
+                            <button class="uk-button" type="button" disabled>
+                            开始:{{ row['start'] }}
+                            </button>
+                            <button class="uk-button" type="button" disabled>
+                            {{ row['end'] }}
+                            </button>
+                            <button class="uk-button" type="button" disabled>
+                            {{ row['version'] }}
+                            </button>
+                            <button class="uk-button" type="button" disabled>
+                            {{ row['room'] }}
+                            </button>
+                            </div>
+                            <div class="uk-width-medium-1-2 uk-flex uk-flex-space-around">
+                            {% for platform in row['platforms'] %}
+                            <a class='uk-button {% if loop.index == 1 %} uk-button-danger{% endif %}' href="{{ platform['link'] }}">{{ pinyinCn[platform['name']] }}：<i class="uk-icon-rmb">{{ platform['price'] }}</i>
+                            </a>
+                            {% endfor %}
+                            </div>
+                        </div> 
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+        </li>
+        {% endfor %}
+    </ul>
+    <!-- map -->
+    <div id='map-box' class="uk-panel-box">
+        <div class="uk-grid" data-uk-grid-margin>
+            <!-- <div id="tip"></div> -->
+            <!-- map left -->
+            <div class="uk-width-medium-2-3 uk-width-small-1-1 ">
+                <div class="uk-width-1-1 uk-flex-inline uk-flex-wrap uk-flex-space-between">
+                    <div class="uk-button-group">
+                        <!-- search result -->
+                        <div id='result-box' data-uk-dropdown="{mode:'click'}">
+                            <a id="result-flag" href="#" class="uk-button"><i class="uk-icon-map-marker"></i></a>
+                            <div class="uk-dropdown uk-dropdown-small">
+                                <ul id="result" class="uk-nav uk-nav-dropdown">
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- search keyword -->
+                        <input class="uk-button" placeholder="手动定位" type="text" id="keyword"/>
+                    </div>
+                    <div class="uk-flex-inline uk-flex-space-between">
+                        <button class="uk-button blue-font" onclick="Select_Cinema(0)">
+                        昌平首都电影院
+                        </button>
+                        <button class="uk-button blue-font" onclick="Select_Cinema(1)">
+                        昌平保利影剧院
+                        </button>
+                        <button class="uk-button blue-font" onclick="Select_Cinema(2)">
+                        昌平大地影院
+                        </button>
+                    </div>
+                </div>
+                <div id="container" class="uk-margin-top"></div>
+            </div>
+            <!-- map right -->
+            <div class="uk-width-medium-1-3 uk-width-small-1-1">
+                <div class="uk-width-small-1-1 uk-flex-inline uk-flex-space-around">
+                    <button class="uk-icon-button uk-icon-bus " onclick="Select_Tool(0)"></button>
+                    <button class="uk-icon-button uk-icon-child" onclick="Select_Tool(1)"></button>
+                    <button class="uk-icon-button uk-icon-car"  onclick="Select_Tool(2)"></button>
+                </div>
+                <div id="route" class='uk-scrollable-box uk-margin-top'>
+                    <div id="panel"></div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+<!-- footer -->
+<div class="uk-block uk-block-secondary uk-block-small uk-contrast uk-text-center uk-margin-large-top">
+<h1>©2016 MIND</h1>
+</div>
+</body>
+<script src="/js/map.js"></script>
+</html>
