@@ -1,0 +1,122 @@
+﻿                                          ++++++++++++++++++++
+                                          +                  +
+                                          +                  +
+                                          +                  +
+                                          +     web page     +
+                                          +                  +
+                                          +                  +
+                                          +                  +
+                                          ++++++++++++++++++++
+
+                                                   ^
+                                                  ^ ^
+                                                 /   \
+                                                  | |
+                                                  | |    template engine Jinjia2
+                                                  | |
+                                                  | |
+                                                  | |
+[
+{"id": "9666",
+ "info": {...},
+ "data": [                                                                           -----
+         {"date": "01-10",                                                               |
+          "data":                                                                        |
+                  [                                                                      |
+                  {"label": "a",                                                         |
+                   "data":  [                                                            |
+                            {"cinema-id": "89fd4ea32ca31a5ee4e965a5",                    | ----- by rowsToGroup
+--------------------------   "lowest-price": "21.0"   ----------------- by addLowest     |
+                             "data":      [                                              |
+                                          {"start": "09:40",                             |
+                                           "end": "11:30",                               |
+                                           "nuomi-price": "33.0",                        |
+                                           "taobao-price": "21.0",                       |
+                                           "meituan-price": "40.0",                      |
+                                           "meituan-link": "...",                    -----
+
+
+                                                   ^
+                                                  ^ ^
+                                                 /   \
+                                                  | |
+                                                  | |    rowsToGroup
+                                                  | |
+                                                  | |
+                                                  | |
+[
+{"id": "9666",
+ "info": {...},
+ [
+ {'date': "01-07", 'label': 'a', 'cinema-id': '89fd4ea32ca31a5ee4e965a5', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-08", 'label': 'a', 'cinema-id': '610852113eacfcb8c51b7506', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-09", 'label': 'a', 'cinema-id': '89fd4ea32ca31a5ee4e965a5', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-09", 'label': 'a', 'cinema-id': '89fd4ea32ca31a5ee4e965a5', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-09", 'label': 'b', 'cinema-id': 'bba87388c76b25b9bca82266', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-09", 'label': 'c', 'cinema-id': 'bba87388c76b25b9bca82266', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-11", 'label': 'b', 'cinema-id': '89fd4ea32ca31a5ee4e965a5', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ ...
+ ]
+]
+
+                                                   ^
+                                                  ^ ^
+                                                 /   \
+                                                  | |
+                                                  | |    multipleKeySort (core algorithm)
+                                                  | |
+                                                  | |
+                                                  | |
+
+[
+{"id": "9666",
+ "info": {...},
+ [
+ {'date': "01-09", 'label': 'a', 'cinema-id': '89fd4ea32ca31a5ee4e965a5', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-11", 'label': 'b', 'cinema-id': '89fd4ea32ca31a5ee4e965a5', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-09", 'label': 'c', 'cinema-id': 'bba87388c76b25b9bca82266', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-07", 'label': 'a', 'cinema-id': '89fd4ea32ca31a5ee4e965a5', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-08", 'label': 'a', 'cinema-id': '610852113eacfcb8c51b7506', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-09", 'label': 'b', 'cinema-id': 'bba87388c76b25b9bca82266', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ {'date': "01-09", 'label': 'a', 'cinema-id': '89fd4ea32ca31a5ee4e965a5', 'start": "09:40", "end": "11:30", "nuomi-price": "33.0" },
+ ...
+ ]
+]
+
+                                                   ^
+                                                  ^ ^
+                                                 /   \
+                                                  | |
+                                                  | |    for  in :
+                                                  | |        for in :
+                                                  | |            for in :
+                                                  | |                for in :
+                                                  | |
+{
+movies[movieId 1]
+    ['info']
+        ['img'] = '...'
+        ['title']  = '咕噜咕噜美人鱼'
+        ['director'] = '杨广福'
+        ['starring'] = '小鱼丸,咕噜'
+        ['type'] = '喜剧,动画,冒险'
+        ['country'] = '中国大陆'
+        ['premiere'] = '2015-12-12'
+        ['length'] = '90分钟'
+        ['plot'] = '一个古老文明与未来科技共存的葫芦小岛。一条遇难的呆萌小人鱼咕噜被人类男孩鱼丸救起，于是开始了他们...'
+    ['cinemas']
+        [cinemaId 1]
+            ['12-23']
+                ['0935']
+                    ['start'] = '09:35'
+                    ['end'] = '预计11:05散场'
+                    ['version'] = '中文版/2D'
+                    ['room'] = '2号厅'
+                    ['nuomi-price'] = '45'
+                    ['taobao-price'] = '31'
+                    ['meituan-price'] = '40'
+                    ['nuomi-link'] = '...'
+                    ['taobao-link'] = '...'
+                    ['meituan-link'] = '...'
+...
+}

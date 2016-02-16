@@ -1,0 +1,25 @@
+﻿movies[movieId 1]
+    ['info']
+        ['img'] = 'http://map.baidu.com/maps/services/thumbnails?width=160&src=http%3A%2F%2Fd.hiphotos.baidu.com%2Fmovie%2Fpic%2Fitem%2Ff703738da9773912f0410f8dfe198618377ae2f3.jpg&quality=90'
+        ['title']  = '咕噜咕噜美人鱼'
+        ['director'] = '杨广福'
+        ['starring'] = '小鱼丸,咕噜'
+        ['type'] = '喜剧,动画,冒险'
+        ['country'] = '中国大陆'
+        ['premiere'] = '2015-12-12'
+        ['length'] = '90分钟'
+        ['plot'] = '一个古老文明与未来科技共存的葫芦小岛。一条遇难的呆萌小人鱼咕噜被人类男孩鱼丸救起，于是开始了他们...'
+    ['cinemas']
+        [cinemaId 1]
+            ['12-23']
+                ['0935']
+                    ['start'] = '09:35'
+                    ['end'] = '预计11:05散场'
+                    ['version'] = '中文版/2D'
+                    ['room'] = '2号厅'
+                    ['nuomi-price'] = '45'
+                    ['taobao-price'] = '31'
+                    ['meituan-price'] = '40'
+                    ['nuomi-link'] = '...'
+                    ['taobao-link'] = '...'
+                    ['meituan-link'] = '...'
