@@ -28,7 +28,7 @@ class Movies:
 
     # initialize
 
-    def __init__(self, latest = False):
+    def __init__(self, latest = True):
         self.main = Nuomi()
         self.taobao = Taobao()
         self.meituan = Meituan()
@@ -47,7 +47,7 @@ class Movies:
 
     # main methods
 
-    def getData(self, latest = False):
+    def getData(self, latest = True):
         if latest:
             self.getFlesh()
         else:

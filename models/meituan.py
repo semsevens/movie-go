@@ -32,7 +32,7 @@ class Meituan:
     # initialize
 
 
-    def __init__(self, latest = False):
+    def __init__(self, latest = True):
         self.moviesFile = 'data/meituan-movies.txt'
         self.moviesIdToTitleFile = 'data/meituan-m-id-title.txt'
         self.movieTitleAccuracy = 50
@@ -48,7 +48,7 @@ class Meituan:
         self.getData(latest)
         self.save(latest)
 
-    def getData(self, latest = False):
+    def getData(self, latest = True):
         if latest:
             self.getFlesh()
         else:

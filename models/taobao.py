@@ -33,7 +33,7 @@ class Taobao:
 
     # initialize
 
-    def __init__(self, latest = False):
+    def __init__(self, latest = True):
         self.moviesFile = 'data/taobao-movies.txt'
         self.moviesIdToTitleFile = 'data/taobao-m-id-title.txt'
         self.movieTitleAccuracy = 50
@@ -49,7 +49,7 @@ class Taobao:
         self.getData(latest)
         self.save(latest)
 
-    def getData(self, latest = False):
+    def getData(self, latest = True):
         if latest:
             self.getFlesh()
         else:
