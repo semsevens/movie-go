@@ -5,17 +5,18 @@ from models.movies import Movies
 
 app = Flask(__name__)
 
-m = Movies(True)
-movies = m.getMovies()
+m = Movies()
+movies = m.data()
 labels = m.getLabels()
 cinemasName = m.getCinemasName()
 pinyinCn = m.getPinyinCn()
 
 @app.route('/', methods = ['GET', 'POST'])
 def home():
+    movies = m.getData()
     return render_template('index.html', movies = movies, labels = labels, cinemasName = cinemasName, pinyinCn = pinyinCn)
 
-@app.route('/js/<path:path>') 
+@app.route('/js/<path:path>')
 def send_js(path):
     return send_from_directory('js', path)
 
