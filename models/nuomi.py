@@ -10,9 +10,6 @@ class Nuomi:
 
     # user interface
 
-    def data(self):
-        return self.movies
-
     def mapMovieTitle(self, movieId):
         return self.moviesIdToTitle[movieId]
 
@@ -21,7 +18,7 @@ class Nuomi:
             if fuzzyMatch(targetMovieTitle, movieTitle) > self.movieTitleAccuracy:
                 return self.moviesTitleToId[targetMovieTitle]
         print(movieTitle)
-        return -1 
+        return -1
 
     def mapCinemaName(self, cinemaId):
         return self.cinemasIdToName[cinemaId]
@@ -37,7 +34,7 @@ class Nuomi:
 
     # initialize
 
-    def __init__(self, latest = False):
+    def __init__(self):
         self.moviesFile = 'data/nuomi-movies.txt'
         self.moviesIdToTitleFile = 'data/nuomi-m-id-title.txt'
         self.movieTitleAccuracy = 50
@@ -50,30 +47,21 @@ class Nuomi:
         self.cinemasIdToName = {'bba87388c76b25b9bca82266': u'大地影院(北京昌平菓岭假日广场店)' ,'89fd4ea32ca31a5ee4e965a5': u'昌平保利影剧院' ,'610852113eacfcb8c51b7506': u'首都电影院(昌平店)' }
         for cinemaId, cinemaName in self.cinemasIdToName.items():
             self.cinemasNameToId[cinemaName] = cinemaId
-        self.getData(latest)
-        self.save(latest)
+        self.getData()
 
-    def getData(self, latest = False):
-        if latest:
-            self.getFlesh()
-        else:
-            self.getOld()
+    def data(self):
         return self.movies
 
-    def save(self, latest):
-        if latest:
-            pickling(self.moviesFile, self.movies)
-            pickling(self.moviesIdToTitleFile, self.moviesIdToTitle)
-
-    # internal methods for getData
-
-    def getOld(self):
+    def getData(self):
         self.movies = unpickling(self.moviesFile)
         self.moviesIdToTitle = unpickling(self.moviesIdToTitleFile)
         for movieId, movieTitle in self.moviesIdToTitle.items():
             self.moviesTitleToId[movieTitle] = movieId
+        return self.movies
 
-    def getFlesh(self):
+    def update(self, name):
+        print('updating %s ...' % name)
+        self.movies = {}
         try:
             for cinemaId in self.cinemas:
                 cinemaUrl = self.getCinemaUrl(cinemaId)
@@ -104,10 +92,15 @@ class Nuomi:
                 print(e.code)
             if hasattr(e, 'reason'):
                 print(e.reason)
-        return self.movies 
+        self.save()
+        print('%s is updated done!' % name)
+        return self.movies
 
+    # internal methods for update
 
-    # internal methods for getFlesh
+    def save(self):
+        pickling(self.moviesFile, self.movies)
+        pickling(self.moviesIdToTitleFile, self.moviesIdToTitle)
 
     def getCinemaUrl(self, cinemaId):
         cinemaUrl = 'http://bj.nuomi.com/cinema/' + cinemaId

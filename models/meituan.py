@@ -10,9 +10,6 @@ class Meituan:
 
     # user interface
 
-    def data(self):
-        return self.movies
-
     def mapMovieTitle(self, movieId):
         return self.moviesIdToTitle[movieId]
 
@@ -31,8 +28,7 @@ class Meituan:
 
     # initialize
 
-
-    def __init__(self, latest = False):
+    def __init__(self):
         self.moviesFile = 'data/meituan-movies.txt'
         self.moviesIdToTitleFile = 'data/meituan-m-id-title.txt'
         self.movieTitleAccuracy = 50
@@ -45,30 +41,21 @@ class Meituan:
         self.cinemasIdToName = {'8186': u'首都电影院(悦荟万科广场店)' ,'66': u'大地影院(昌平菓岭店)' ,'50': u'昌平保利影剧院(佳莲时代广场店)' }
         for cinemaId, cinemaName in self.cinemasIdToName.items():
             self.cinemasNameToId[cinemaName] = cinemaId
-        self.getData(latest)
-        self.save(latest)
+        self.getData()
 
-    def getData(self, latest = False):
-        if latest:
-            self.getFlesh()
-        else:
-            self.getOld()
+    def data(self):
         return self.movies
 
-    def save(self, latest):
-        if latest:
-            pickling(self.moviesFile, self.movies)
-            pickling(self.moviesIdToTitleFile, self.moviesIdToTitle)
-
-    # internal methods for getData
-
-    def getOld(self):
+    def getData(self):
         self.movies = unpickling(self.moviesFile)
         self.moviesIdToTitle = unpickling(self.moviesIdToTitleFile)
         for movieId, movieTitle in self.moviesIdToTitle.items():
             self.moviesTitleToId[movieTitle] = movieId
+        return self.movies
 
-    def getFlesh(self):
+    def update(self, name):
+        print('updating %s ...' % name)
+        self.movies = {}
         try:
             for cinemaId in self.cinemas:
                 # t = self.cinemasMap[cinemaId];
@@ -85,7 +72,7 @@ class Meituan:
                 for item in items:
                     movieinfo = item[0].strip();
                     movieId = item[1].strip();
-                    if movieId not in self.movies: 
+                    if movieId not in self.movies:
                         self.movies[movieId] = {}
                         self.movies[movieId]['cinemas'] = {}
                     self.movies[movieId]['info'] = {}
@@ -99,13 +86,15 @@ class Meituan:
                 print(e.code)
             if hasattr(e, 'reason'):
                 print(e.reason)
-        
-        # for movieId, theMovie in self.movies.items():
-        #     for cinemaId, theCinema in theMovie['cinemas'].items():
-        #         for Date, theRows in theCinema.items():
-        #             for theRow in theRows.values():
-        #                 print(theRow)
+        self.save()
+        print('%s is updated done!' % name)
+        return self.movies
 
+    # internal methods for update
+
+    def save(self):
+        pickling(self.moviesFile, self.movies)
+        pickling(self.moviesIdToTitleFile, self.moviesIdToTitle)
 
     def getCinemaUrl(self, cinemaId):
         cinemaUrl = 'http://platform.mobile.meituan.com/open/maoyan/v1/cinema/'+cinemaId+'/movies/shows.json?'
@@ -122,11 +111,10 @@ class Meituan:
             infos = re.findall(pattern, pagecode)
             for info in infos:
                 status = info[2].strip()
-                if(status):   
+                if(status):
                     start = info[0].strip()
                     record = movieStatus[date][start[0:2] + start[3:5]] = {}
                     record['start'] = info[0].strip()
                     record['meituan-link'] = info[1].strip()
                     record['meituan-price'] = info[3].strip()[0:2]
-        print(movieStatus)
         return movieStatus

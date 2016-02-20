@@ -10,9 +10,6 @@ class Taobao:
 
     # user interface
 
-    def data(self):
-        return self.movies
-
     def mapMovieTitle(self, movieId):
         return self.moviesIdToTitle[movieId]
 
@@ -33,7 +30,7 @@ class Taobao:
 
     # initialize
 
-    def __init__(self, latest = False):
+    def __init__(self):
         self.moviesFile = 'data/taobao-movies.txt'
         self.moviesIdToTitleFile = 'data/taobao-m-id-title.txt'
         self.movieTitleAccuracy = 50
@@ -46,30 +43,21 @@ class Taobao:
         self.cinemasIdToName = {'15516': u'首都电影院昌平店','4379': u'北京昌平保利影剧院','5386': u'北京大地影院菓岭假日广场店'}
         for cinemaId, cinemaName in self.cinemasIdToName.items():
             self.cinemasNameToId[cinemaName] = cinemaId
-        self.getData(latest)
-        self.save(latest)
+        self.getData()
 
-    def getData(self, latest = False):
-        if latest:
-            self.getFlesh()
-        else:
-            self.getOld()
+    def data(self):
         return self.movies
 
-    def save(self, latest):
-        if latest:
-            pickling(self.moviesFile, self.movies)
-            pickling(self.moviesIdToTitleFile, self.moviesIdToTitle)
-
-    # internal methods for getData
-
-    def getOld(self):
+    def getData(self):
         self.movies = unpickling(self.moviesFile)
         self.moviesIdToTitle = unpickling(self.moviesIdToTitleFile)
         for movieId, movieTitle in self.moviesIdToTitle.items():
             self.moviesTitleToId[movieTitle] = movieId
+        return self.movies
 
-    def getFlesh(self):
+    def update(self, name):
+        print('updating %s ...' % name)
+        self.movies = {}
         try:
             for cinemaId in self.cinemas:
                 # url = 'https://dianying.taobao.com/cinemaDetail.htm?cinemaId='+cinemaId
@@ -87,7 +75,7 @@ class Taobao:
                     movieId = item
                     movieUrl = 'http://dianying.taobao.com/cinemaDetailSchedule.htm?cinemaId='+ cinemaId +'&showId='+ movieId           
                     m_pageCode = getPageCode(movieUrl)
-                    if movieId not in self.movies:  
+                    if movieId not in self.movies:
                         self.movies[movieId] = {}
                         self.movies[movieId]['info'] = {}
                         self.movies[movieId]['cinemas'] = {}
@@ -109,7 +97,15 @@ class Taobao:
                 print(e.code)
             if hasattr(e, 'reason'):
                 print(e.reason)
+        self.save()
+        print('%s is updated done!' % name)
         return self.movies
+
+    # internal methods for update
+
+    def save(self):
+        pickling(self.moviesFile, self.movies)
+        pickling(self.moviesIdToTitleFile, self.moviesIdToTitle)
 
     def getCinemaUrl(self, cinemaId):
         cinemaUrl = 'https://dianying.taobao.com/cinemaDetailSchedule.htm?cinemaId='+ cinemaId
@@ -128,7 +124,7 @@ class Taobao:
             movieInfo['type'] = item[6].strip()
             movieInfo['country'] = item[7].strip()
             movieInfo['lang'] = item[8].strip()
-        return movieInfo    
+        return movieInfo
 
     def getMovieStatus(self, pageCode, movieStatus):
         pattern= re.compile('class="hall-time".*?bold">(.*?)</em>(.*?)</td>.*?"hall-type">(.*?)</td>.*?"hall-name">(.*?)</td>.*?<label>(.*?)</label>.*?"now">(.*?)</em>.*?"old">(.*?)</del>.*?href="(.*?)">', re.S)
