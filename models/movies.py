@@ -7,7 +7,7 @@ from models.taobao import Taobao
 from models.meituan import Meituan
 from functions.file import pickling, unpickling, saveFile
 from functions.sort import multipleKeySort
-from multiprocessing import Pool
+from multiprocessing import Pool, freeze_support
 
 class Movies:
 
@@ -53,12 +53,15 @@ class Movies:
 
     def update(self):
         self.movies = {}
-        pool = Pool(3)
-        pool.apply_async(self.main.update, args=('nuomi',))
-        pool.apply_async(self.taobao.update, args=('taobao',))
-        pool.apply_async(self.meituan.update, args=('meituan',))
-        pool.close()
-        pool.join()
+        __name__ = '__main__'
+        if __name__ == '__main__':
+            freeze_support()
+            pool = Pool(3)
+            pool.apply_async(self.main.update, args=('nuomi',))
+            pool.apply_async(self.taobao.update, args=('taobao',))
+            pool.apply_async(self.meituan.update, args=('meituan',))
+            pool.close()
+            pool.join()
         self.movies = self.main.data()
         self.mergeData(self.taobao)
         self.mergeData(self.meituan)
