@@ -43,7 +43,6 @@ class Taobao:
         self.cinemasIdToName = {'15516': u'首都电影院昌平店','4379': u'北京昌平保利影剧院','5386': u'北京大地影院菓岭假日广场店'}
         for cinemaId, cinemaName in self.cinemasIdToName.items():
             self.cinemasNameToId[cinemaName] = cinemaId
-        self.getData()
 
     def data(self):
         return self.movies
