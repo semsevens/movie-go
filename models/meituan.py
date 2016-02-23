@@ -105,16 +105,33 @@ class Meituan:
         pattern = re.compile('"showDate":"(.*?)"', re.S)
         dates = re.findall(pattern, pagecode)
         for date in dates:
-            pattern = re.compile('"dt":"'+date+'","tm":"(.*?)",.*?"seatUrl":"(.*?)","sell":(.*?),"sellPr":"(.*?)",', re.S)
-            date = date[5:]
-            movieStatus[date] = {}
-            infos = re.findall(pattern, pagecode)
-            for info in infos:
-                status = info[2].strip()
-                if(status):
-                    start = info[0].strip()
-                    record = movieStatus[date][start[0:2] + start[3:5]] = {}
-                    record['start'] = info[0].strip()
-                    record['meituan-link'] = info[1].strip()
-                    record['meituan-price'] = info[3].strip()[0:2]
+            t_date = date[5:]
+            movieStatus[t_date] = {}
+            pattern = re.compile('"dt":"'+date+'","tm":"(.*?)",.*?"sell":(.*?),',re.S)
+            times = re.findall(pattern, pagecode)
+            for time in times:
+                on_time = time[0].strip()
+                status = time[1].strip()
+                if (status == 'true'):
+                    pattern = re.compile('"dt":"'+date+'","tm":"'+on_time+'",.*?"seatUrl":"(.*?)",.*?"sellPr":"(.*?)",', re.S)
+                    infos = re.findall(pattern, pagecode)
+                    for info in infos:  
+                        start = on_time
+                        record = movieStatus[t_date][start[0:2] + start[3:5]] = {}
+                        record['start'] = on_time
+                        record['meituan-link'] = info[0].strip()
+                        record['meituan-price'] = info[1].strip()[0:2]
+        # for date in dates:
+        #     pattern = re.compile('"dt":"'+date+'","tm":"(.*?)",.*?"seatUrl":"(.*?)","sell":(.*?),"sellPr":"(.*?)",', re.S)
+        #     date = date[5:]
+        #     movieStatus[date] = {}
+        #     infos = re.findall(pattern, pagecode)
+        #     for info in infos:
+        #         status = info[2].strip()
+        #         if(status):
+        #             start = info[0].strip()
+        #             record = movieStatus[date][start[0:2] + start[3:5]] = {}
+        #             record['start'] = info[0].strip()
+        #             record['meituan-link'] = info[1].strip()
+        #             record['meituan-price'] = info[3].strip()[0:2]
         return movieStatus
