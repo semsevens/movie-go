@@ -3,4 +3,5 @@
 from models.movies import Movies
 
 m = Movies()
-m.update()
+if __name__ == '__main__':
+    m.update()

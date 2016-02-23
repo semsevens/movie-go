@@ -47,7 +47,6 @@ class Nuomi:
         self.cinemasIdToName = {'bba87388c76b25b9bca82266': u'大地影院(北京昌平菓岭假日广场店)' ,'89fd4ea32ca31a5ee4e965a5': u'昌平保利影剧院' ,'610852113eacfcb8c51b7506': u'首都电影院(昌平店)' }
         for cinemaId, cinemaName in self.cinemasIdToName.items():
             self.cinemasNameToId[cinemaName] = cinemaId
-        self.getData()
 
     def data(self):
         return self.movies

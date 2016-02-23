@@ -6,7 +6,7 @@ from models.movies import Movies
 app = Flask(__name__)
 
 m = Movies()
-movies = m.data()
+movies = {}
 labels = m.getLabels()
 cinemasName = m.getCinemasName()
 pinyinCn = m.getPinyinCn()

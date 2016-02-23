@@ -41,7 +41,6 @@ class Meituan:
         self.cinemasIdToName = {'8186': u'首都电影院(悦荟万科广场店)' ,'66': u'大地影院(昌平菓岭店)' ,'50': u'昌平保利影剧院(佳莲时代广场店)' }
         for cinemaId, cinemaName in self.cinemasIdToName.items():
             self.cinemasNameToId[cinemaName] = cinemaId
-        self.getData()
 
     def data(self):
         return self.movies

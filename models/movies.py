@@ -7,7 +7,7 @@ from models.taobao import Taobao
 from models.meituan import Meituan
 from functions.file import pickling, unpickling, saveFile
 from functions.sort import multipleKeySort
-from multiprocessing import Pool
+from multiprocessing import Pool, freeze_support
 
 class Movies:
 
@@ -39,7 +39,6 @@ class Movies:
         self.afternoonEnd = "18:00"
         self.nightEnd = "24:00"
         self.labels = {'a': u'早场', 'b': u'中场', 'c': u'晚场'}
-        self.getData()
 
 
     # main methods
@@ -59,7 +58,7 @@ class Movies:
         pool.apply_async(self.meituan.update, args=('meituan',))
         pool.close()
         pool.join()
-        self.movies = self.main.data()
+        self.movies = self.main.getData()
         self.mergeData(self.taobao)
         self.mergeData(self.meituan)
         self.translate()
@@ -153,14 +152,13 @@ class Movies:
     def mergeData(self, obj):
         missMovieCount = 0
         missCinemaCount = 0
-        data = obj.data()
+        data = obj.getData()
         for movieId, theMovie in data.items():
             movieTitle = obj.mapMovieTitle(movieId)
             targetMovieId = self.main.remapMovieTitle(movieTitle)
             if targetMovieId == -1:
                 missMovieCount += 1
                 print('targetMovieId Error')
-                continue
             for cinemaId, theCinema in theMovie['cinemas'].items():
                 cinemaName = obj.mapCinemaName(cinemaId)
                 targetCinemaId = self.main.remapCinemaName(cinemaName)
